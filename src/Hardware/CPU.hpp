@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <SFML/Graphics.hpp>
+#include "Params.hpp"
 
 typedef unsigned char BYTE;
 typedef unsigned short int WORD;
@@ -24,7 +26,9 @@ private:
     WORD m_ProgramCounter ; // the 16-bit program counter
     std::vector<WORD> m_Stack; // the 16-bit stack
 
-    BYTE m_ScreenData[64][32];
+    // Peripheric components
+    sf::Color ScreenData[SCREEN_HIGHT][SCREEN_WIDTH];
+    bool Keys[KEYS_NUMBER];
 
     void reset();
 
@@ -81,6 +85,14 @@ private:
     void Execute0x8XY6(int reg_number1);
     void Execute0x8XY7(int reg_number1, int reg_number2);
     void Execute0x8XYE(int reg_number1);
+
+    void Execute0x9XY0(int reg_number1, int reg_number2);
+
+    void Execute0xANNN(int nnn);
+    
+    void Execute0xBNNN(int nnn);
+
+    void Execute0xCXNN(int reg_number1, int nn);
 };
 
 #endif

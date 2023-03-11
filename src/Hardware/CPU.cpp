@@ -1,10 +1,17 @@
 #include <iostream>
 #include <vector>
+#include <SFML/Graphics.hpp>
+#include "Params.hpp"
 
 #include "CPU.hpp"
 
 CPU::CPU() {
     this->reset();
+    for(int i = 0; i < SCREEN_HIGHT; i++) {
+        for(int j = 0; j < SCREEN_HIGHT; j++) {
+            this->ScreenData[i][j] = sf::Color::Black;
+        }
+    }
 }
 
 CPU::~CPU() {
@@ -246,3 +253,56 @@ void CPU::Execute0x8XYE(int reg_number1) {
 	this->m_Registers[reg_number1] <<= 1 ;
 }
 
+// 0x9000 opcodes
+
+void CPU::DecodeOpcode9(WORD opcode) {
+    int regx = opcode & 0x0F00;
+    regx >>= 8;
+    int regy = opcode & 0x00F0;
+    regy >>= 4;
+    switch(opcode & 0x000F) {
+        case 0x0000: this->Execute0x9XY0(regx, regy); break;
+        default: this->unknownOpcode(opcode); break;
+    }
+}
+
+void CPU::Execute0x9XY0(int reg_number1, int reg_number2) {
+    if(this->m_Registers[reg_number1] != this->m_Registers[reg_number2]) this->m_ProgramCounter += 2;
+}
+
+// 0xA000 opcodes
+
+void CPU::DecodeOpcodeA(WORD opcode) {
+    int nnn = opcode & 0x0FFF;
+}
+
+void CPU::Execute0xANNN(int nnn) {
+    this->m_AddressI = nnn;
+}
+
+// 0xB000 opcodes
+
+void CPU::DecodeOpcodeB(WORD opcode) {
+    int nnn = opcode & 0x0FFF;
+}
+
+void CPU::Execute0xBNNN(int nnn) {
+    this->m_ProgramCounter = this->m_Registers[0] + nnn;
+}
+
+// 0xC000 opcodes
+
+void CPU::DecodeOpcodeC(WORD opcode) {
+    int regx = opcode & 0x0F00;
+    regx >>= 8;
+    int nn = opcode & 0x00FF;
+    this->Execute0xCXNN(regx, nn);
+}
+
+void CPU::Execute0xCXNN(int reg_number1, int nn) {
+    this->m_Registers[reg_number1] = rand() & nn;
+}
+
+void DecodeOpcodeD(WORD opcode){}
+void DecodeOpcodeE(WORD opcode){}
+void DecodeOpcodeF(WORD opcode){}
