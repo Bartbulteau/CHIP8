@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include "Params.hpp"
 
 #include "CPU.hpp"
@@ -9,7 +8,7 @@ CPU::CPU() {
     this->reset();
     for(int i = 0; i < SCREEN_WIDTH; i++) {
         for(int j = 0; j < SCREEN_HIGHT; j++) {
-            this->ScreenData[i][j] = sf::Color::Black;
+            this->ScreenData[i][j] = false;
         }
     }
     for(int i = 0; i < KEYS_NUMBER; i++) {
@@ -32,7 +31,7 @@ void CPU::loadGame(const char* filename) {
 }
 
 // Peripheric related functions
-sf::Color CPU::getPixelColor(int i, int j) {
+bool CPU::isPixelActivated(int i, int j) {
     return this->ScreenData[i][j];
 }
 void CPU::setKeyState(int i, bool keystate) {
@@ -97,7 +96,11 @@ void CPU::DecodeOpcode0(WORD opcode) {
 }
 
 void CPU::Execute0x00E0() {
-    std::cout << "CLS" << std::endl;
+    for(int i = 0; i < SCREEN_WIDTH; i++) {
+        for(int j = 0; j < SCREEN_HIGHT; j++) {
+            this->ScreenData[i][j] = false;
+        }
+    }
 }
 
 void CPU::Execute0x00EE() {

@@ -73,7 +73,8 @@ void UI::drawScreen() {
 void UI::loadPixels() {
     for(int i = 0; i < SCREEN_WIDTH; i++) {
         for (int j = 0; j < SCREEN_HIGHT; j++) {
-            this->screen[i][j]->setColor(this->cpu.getPixelColor(i, j));
+            if(this->cpu.isPixelActivated(i, j)) this->screen[i][j]->setColor(sf::Color::White);
+            else this->screen[i][j]->setColor(sf::Color::Black);
         }
     }
 }

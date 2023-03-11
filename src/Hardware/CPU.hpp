@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include "Params.hpp"
 
 typedef unsigned char BYTE;
@@ -23,7 +22,7 @@ public:
     void loadGame(const char* filename);
 
     // Peripheric related functions
-    sf::Color getPixelColor(int i, int j);
+    bool isPixelActivated(int i, int j);
     void setKeyState(int i, bool keystate);
 
 private:
@@ -36,7 +35,7 @@ private:
     std::vector<WORD> m_Stack; // the 16-bit stack
 
     // Peripheric components
-    sf::Color ScreenData[SCREEN_WIDTH][SCREEN_HIGHT];
+    bool ScreenData[SCREEN_WIDTH][SCREEN_HIGHT];
     bool Keys[KEYS_NUMBER];
 
     // Memory related functions
