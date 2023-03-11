@@ -1,3 +1,3 @@
 # GBEmu
 
-Basic GameBoy emulator in C++
+Basic CHIP8 emulator in C++

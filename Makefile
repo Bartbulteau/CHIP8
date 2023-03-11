@@ -11,7 +11,7 @@ SRC := $(shell find $(SOURCEDIR) -name '*.cpp')
 
 OBJ := $(SRC:%.cpp=%.o)
 
-BIN := GBEmu 
+BIN := CHIP8 
 
 all:$(BIN)
 
