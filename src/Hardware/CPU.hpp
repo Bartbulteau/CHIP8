@@ -79,7 +79,6 @@ private:
     void Execute0x8XY1(int reg_number1, int reg_number2);
     void Execute0x8XY2(int reg_number1, int reg_number2);
     void Execute0x8XY3(int reg_number1, int reg_number2);
-    void Execute0x8XY3(int reg_number1, int reg_number2);
     void Execute0x8XY4(int reg_number1, int reg_number2);
     void Execute0x8XY5(int reg_number1, int reg_number2);
     void Execute0x8XY6(int reg_number1);

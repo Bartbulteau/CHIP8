@@ -12,6 +12,9 @@ CPU::CPU() {
             this->ScreenData[i][j] = sf::Color::Black;
         }
     }
+    for(int i = 0; i < KEYS_NUMBER; i++) {
+        this->Keys[i] = false;
+    }
 }
 
 CPU::~CPU() {
@@ -229,8 +232,6 @@ void CPU::Execute0x8XY4(int reg_number1, int reg_number2) {
 }
 
 void CPU::Execute0x8XY5(int reg_number1, int reg_number2) {
-    int value = this->m_Registers[reg_number1] - this->m_Registers[reg_number2];
-
     if(this->m_Registers[reg_number1] > this->m_Registers[reg_number2]) this->m_Registers[0xF] = 1;
     else this->m_Registers[0xF] = 0;
 
@@ -274,6 +275,7 @@ void CPU::Execute0x9XY0(int reg_number1, int reg_number2) {
 
 void CPU::DecodeOpcodeA(WORD opcode) {
     int nnn = opcode & 0x0FFF;
+    this->Execute0xANNN(nnn);
 }
 
 void CPU::Execute0xANNN(int nnn) {
@@ -284,6 +286,7 @@ void CPU::Execute0xANNN(int nnn) {
 
 void CPU::DecodeOpcodeB(WORD opcode) {
     int nnn = opcode & 0x0FFF;
+    this->Execute0xBNNN(nnn);
 }
 
 void CPU::Execute0xBNNN(int nnn) {
@@ -303,6 +306,6 @@ void CPU::Execute0xCXNN(int reg_number1, int nn) {
     this->m_Registers[reg_number1] = rand() & nn;
 }
 
-void DecodeOpcodeD(WORD opcode){}
-void DecodeOpcodeE(WORD opcode){}
-void DecodeOpcodeF(WORD opcode){}
+void CPU::DecodeOpcodeD(WORD opcode){}
+void CPU::DecodeOpcodeE(WORD opcode){}
+void CPU::DecodeOpcodeF(WORD opcode){}
