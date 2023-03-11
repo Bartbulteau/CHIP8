@@ -16,7 +16,16 @@ public:
     CPU();
     virtual ~CPU();
 
+    // Public variables
+
+
+    // Public functions
     void loadGame(const char* filename);
+
+    // Peripheric related functions
+    sf::Color getPixelColor(int i, int j);
+    void setKeyState(int i, bool keystate);
+
 private:
 
     // Memory
@@ -27,9 +36,10 @@ private:
     std::vector<WORD> m_Stack; // the 16-bit stack
 
     // Peripheric components
-    sf::Color ScreenData[SCREEN_HIGHT][SCREEN_WIDTH];
+    sf::Color ScreenData[SCREEN_WIDTH][SCREEN_HIGHT];
     bool Keys[KEYS_NUMBER];
 
+    // Memory related functions
     void reset();
 
     // Opcode related functions

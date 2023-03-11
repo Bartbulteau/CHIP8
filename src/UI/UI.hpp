@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "Pixel.hpp"
 #include "../Hardware/Params.hpp"
+#include "../Hardware/CPU.hpp"
 
 class UI {
 public:
@@ -18,13 +19,19 @@ public:
 
 private:
 
+    // Emulator
+    CPU cpu;
+
+    //Window and events
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
     sf::Event ev;
 
     Pixel*** screen;
 
+    // rendering
     void drawScreen();
+    void loadPixels();
 };
 
 #endif

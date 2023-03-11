@@ -2,7 +2,7 @@
 #include "src/UI/UI.hpp"
 #include "src/Hardware/Params.hpp"
 
-#define WINDOW_WIDTH 2000
+#define WINDOW_WIDTH 1500
 
 int main(int argc, char** argv) {
   UI ui(float(WINDOW_WIDTH)/float(SCREEN_WIDTH));

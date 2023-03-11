@@ -7,7 +7,7 @@
 
 CPU::CPU() {
     this->reset();
-    for(int i = 0; i < SCREEN_HIGHT; i++) {
+    for(int i = 0; i < SCREEN_WIDTH; i++) {
         for(int j = 0; j < SCREEN_HIGHT; j++) {
             this->ScreenData[i][j] = sf::Color::Black;
         }
@@ -31,8 +31,17 @@ void CPU::loadGame(const char* filename) {
     fclose(in);
 }
 
+// Peripheric related functions
+sf::Color CPU::getPixelColor(int i, int j) {
+    return this->ScreenData[i][j];
+}
+void CPU::setKeyState(int i, bool keystate) {
+    this->Keys[i] = keystate;
+}
+
 // Provate functions
 
+// Memory related functions
 void CPU::reset() {
     m_AddressI = 0;
     m_ProgramCounter = 0x200;
