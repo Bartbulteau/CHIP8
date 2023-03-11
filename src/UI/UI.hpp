@@ -3,13 +3,28 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "Pixel.hpp"
+#include "../Hardware/Params.hpp"
 
 class UI {
-private:
-    /* data */
 public:
-    UI(/* args */);
-    ~UI();
+    UI(float h);
+    virtual ~UI();
+
+    const bool getWindowIsOpen() const;
+    void update();
+    void render();
+    void pollEvents();
+
+private:
+
+    sf::RenderWindow* window;
+    sf::VideoMode videoMode;
+    sf::Event ev;
+
+    Pixel*** screen;
+
+    void drawScreen();
 };
 
 #endif
