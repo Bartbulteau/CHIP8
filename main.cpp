@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     filename = argv[1];
   } else {
     std::cout << "Error no ROM to load. Try CHIP8 path/to/rom" << std::endl;
-    return 0;
+    return EXIT_FAILURE;
   }
 
   UI ui(float(WINDOW_WIDTH)/float(SCREEN_WIDTH));
@@ -22,5 +22,5 @@ int main(int argc, char** argv) {
     ui.render();
   }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

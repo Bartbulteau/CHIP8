@@ -19,6 +19,7 @@ CPU::~CPU() {
 // Public functions
 
 void CPU::loadGame(const char* filename) {
+    // loading rom
     this->reset();
     FILE *in;
     in = fopen(filename, "rb" );
