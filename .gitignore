@@ -2,3 +2,4 @@
 .vscode
 *.o
 CHIP8
+*.ch8

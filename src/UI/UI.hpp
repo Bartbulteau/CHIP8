@@ -17,11 +17,10 @@ public:
     void render();
     void pollEvents();
 
-private:
-
     // Emulator
     CPU cpu;
 
+private:
     //Window and events
     sf::RenderWindow* window;
     sf::VideoMode videoMode;

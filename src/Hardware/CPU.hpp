@@ -20,6 +20,7 @@ public:
 
     // Public functions
     void loadGame(const char* filename);
+    void cycle();
 
     // Peripheric related functions
     bool isPixelActivated(int i, int j);
@@ -28,11 +29,13 @@ public:
 private:
 
     // Memory
-    BYTE m_GameMemory[0xFFF] ; // 0xFFF bytes of memory
-    BYTE m_Registers[16] ; // 16 registers, 1 byte each
-    WORD m_AddressI ; // the 16-bit address register I
-    WORD m_ProgramCounter ; // the 16-bit program counter
-    std::vector<WORD> m_Stack; // the 16-bit stack
+    BYTE m_GameMemory[0xFFF] ;  // 0xFFF bytes of memory
+    BYTE m_Registers[16] ;      // 16 registers, 1 byte each
+    WORD m_AddressI ;           // the 16-bit address register I
+    WORD m_ProgramCounter ;     // the 16-bit program counter
+    BYTE m_DelayTimer;
+    BYTE m_SoundTimer;
+    std::vector<WORD> m_Stack;  // the 16-bit stack
 
     // Peripheric components
     bool ScreenData[SCREEN_WIDTH][SCREEN_HIGHT];
@@ -40,6 +43,10 @@ private:
 
     // Memory related functions
     void reset();
+
+    // Peripheric related functions
+    int keyPressedValue();
+    void beep();
 
     // Opcode related functions
     // error handling
@@ -101,6 +108,21 @@ private:
     void Execute0xBNNN(int nnn);
 
     void Execute0xCXNN(int reg_number1, int nn);
+
+    void Execute0xDXYN(int reg_number1, int reg_number2, int n);
+
+    void Execute0xEX9E(int reg_number1);
+    void Execute0xEXA1(int reg_number1);
+
+    void Execute0xFX07(int reg_number1);
+    void Execute0xFX0A(int reg_number1);
+    void Execute0xFX15(int reg_number1);
+    void Execute0xFX18(int reg_number1);
+    void Execute0xFX1E(int reg_number1);
+    void Execute0xFX29(int reg_number1);
+    void Execute0xFX33(int reg_number1);
+    void Execute0xFX55(int reg_number1);
+    void Execute0xFX65(int reg_number1);
 };
 
 #endif

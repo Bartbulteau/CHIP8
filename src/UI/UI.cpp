@@ -53,6 +53,7 @@ void UI::pollEvents() {
 
 void UI::update() {
     this->pollEvents();
+    this->cpu.cycle();
     this->loadPixels();
 }
 

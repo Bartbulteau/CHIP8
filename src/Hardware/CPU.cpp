@@ -6,14 +6,6 @@
 
 CPU::CPU() {
     this->reset();
-    for(int i = 0; i < SCREEN_WIDTH; i++) {
-        for(int j = 0; j < SCREEN_HIGHT; j++) {
-            this->ScreenData[i][j] = false;
-        }
-    }
-    for(int i = 0; i < KEYS_NUMBER; i++) {
-        this->Keys[i] = false;
-    }
 }
 
 CPU::~CPU() {
@@ -30,6 +22,15 @@ void CPU::loadGame(const char* filename) {
     fclose(in);
 }
 
+void CPU::cycle() {
+    for(int i = 0; i < CYCLES_PER_FRAME; i++) {
+        this->executeNextOpcode();
+        if(this->m_DelayTimer > 0) this->m_DelayTimer--;
+        if(this->m_SoundTimer > 0) this->m_SoundTimer--;
+        if(this->m_SoundTimer > 0) this->beep();
+    }
+}
+
 // Peripheric related functions
 bool CPU::isPixelActivated(int i, int j) {
     return this->ScreenData[i][j];
@@ -38,13 +39,40 @@ void CPU::setKeyState(int i, bool keystate) {
     this->Keys[i] = keystate;
 }
 
-// Provate functions
+// Private functions
 
 // Memory related functions
 void CPU::reset() {
     m_AddressI = 0;
     m_ProgramCounter = 0x200;
-    memset(m_Registers,0,sizeof(m_Registers)); // set registers to 0
+
+    memset(m_Registers,0,sizeof(m_Registers));      // set registers to 0
+    memset(m_GameMemory,0,sizeof(m_GameMemory));    // set gamememory to 0
+
+    
+    for(int i = 0; i < SCREEN_WIDTH; i++) {         // reset screen
+        for(int j = 0; j < SCREEN_HIGHT; j++) {
+            this->ScreenData[i][j] = false;
+        }
+    }
+    for(int i = 0; i < KEYS_NUMBER; i++) {          // reset keys
+        this->Keys[i] = false;
+    }
+
+    m_DelayTimer = 0;
+    m_SoundTimer = 0;
+}
+
+// Peripheric related functions
+int CPU::keyPressedValue() {
+    for(int i = 0; i < KEYS_NUMBER; i++) {
+        if(this->Keys[i]) return i;
+    }
+    return -1;
+} 
+
+void CPU::beep() {
+    std::cout << "beep" << std::endl;
 }
 
 // Opcode related
@@ -318,6 +346,129 @@ void CPU::Execute0xCXNN(int reg_number1, int nn) {
     this->m_Registers[reg_number1] = rand() & nn;
 }
 
-void CPU::DecodeOpcodeD(WORD opcode){}
-void CPU::DecodeOpcodeE(WORD opcode){}
-void CPU::DecodeOpcodeF(WORD opcode){}
+// 0xD000 opcodes
+
+void CPU::DecodeOpcodeD(WORD opcode) {
+    int regx = opcode & 0x0F00;
+    regx >>= 8;
+    int regy = opcode & 0x00F0;
+    regy >>= 4;
+    int n = opcode & 0x000F;
+    this->Execute0xDXYN(regx, regy, n);
+}
+
+void CPU::Execute0xDXYN(int reg_number1, int reg_number2, int n) {
+    int coordx = this->m_Registers[reg_number1];
+    int coordy = this->m_Registers[reg_number2];
+    this->m_Registers[0xF] = 0;
+
+    for (int j = 0; j < n; j++) {
+
+        BYTE line = this->m_GameMemory[this->m_AddressI+j]; // get line to draw from memory
+
+        bool line_pixels[8];                                // convert to an array bool depending on each expected pixel state
+        for(int k = 0; k < 8; k++) {
+            line_pixels[k] = bool((line >> k*8)&255);
+        }
+
+        for(int i = 0; i < 8; i++) {                        // apply following the rule
+
+            if(coordx+i > SCREEN_WIDTH-1) coordx = -i;
+            if(coordy+j > SCREEN_HIGHT-1) coordy = -j;
+
+            bool tmp = this->ScreenData[coordx+i][coordy+j];
+            this->ScreenData[coordx+i][coordy+j] = (line_pixels[i] != this->ScreenData[coordx+i][coordy+j]);
+            if(this->ScreenData[coordx+i][coordy+j] != tmp) this->m_Registers[0xF] = 1;
+        }
+
+    }
+}
+
+// 0xE000 opcodes
+void CPU::DecodeOpcodeE(WORD opcode) {
+    int regx = opcode & 0x0F00;
+    regx >>= 8;
+    switch(opcode & 0x0FF) {
+        case 0x009E: this->Execute0xEX9E(regx); break;
+        case 0x00A1: this->Execute0xEXA1(regx); break;
+        default: this->unknownOpcode(opcode); break;
+    }
+}
+
+void CPU::Execute0xEX9E(int reg_number1) {
+    if(this->Keys[reg_number1]) this->m_ProgramCounter += 2;
+}
+
+void CPU::Execute0xEXA1(int reg_number1) {
+    if(!this->Keys[reg_number1]) this->m_ProgramCounter += 2;
+}
+
+// 0xF000 opcodes
+void CPU::DecodeOpcodeF(WORD opcode) {
+    int regx = opcode & 0x0F00;
+    regx >>= 8;
+    switch(opcode & 0x0FF) {
+        case 0x0007: this->Execute0xFX07(regx); break;
+        case 0x000A: this->Execute0xFX0A(regx); break;
+        case 0x0015: this->Execute0xFX15(regx); break;
+        case 0x0018: this->Execute0xFX18(regx); break;
+        case 0x001E: this->Execute0xFX1E(regx); break;
+        case 0x0029: this->Execute0xFX29(regx); break;
+        case 0x0033: this->Execute0xFX33(regx); break;
+        case 0x0055: this->Execute0xFX55(regx); break;
+        case 0x0065: this->Execute0xFX65(regx); break;
+        default: this->unknownOpcode(opcode); break;
+    }
+}
+
+void CPU::Execute0xFX07(int reg_number1) {
+    this->m_Registers[reg_number1] = this->m_DelayTimer;
+}
+
+void CPU::Execute0xFX0A(int reg_number1) {
+    int key = this->keyPressedValue();
+    if(key == -1) this->m_ProgramCounter -= 2;  // loop while no key is pressed
+    else this->m_Registers[reg_number1] = key;  // store once key is pressed
+}
+
+void CPU::Execute0xFX15(int reg_number1) {
+    this->m_DelayTimer = this->m_Registers[reg_number1];
+}
+
+void CPU::Execute0xFX18(int reg_number1) {
+    this->m_SoundTimer = this->m_Registers[reg_number1];
+}
+
+void CPU::Execute0xFX1E(int reg_number1) {
+    this->m_AddressI += this->m_Registers[reg_number1];
+}
+
+void CPU::Execute0xFX29(int reg_number1) {
+    this->m_AddressI = this->m_Registers[reg_number1]*5;
+}
+
+void CPU::Execute0xFX33(int reg_number1) {
+    int value = this->m_Registers[reg_number1] ;
+
+	int hundreds = value / 100 ;
+	int tens = (value / 10) % 10 ;
+	int units = value % 10 ;
+
+	this->m_GameMemory[m_AddressI] = hundreds ;
+	this->m_GameMemory[m_AddressI+1] = tens ;
+	this->m_GameMemory[m_AddressI+2] = units ;
+}
+
+void CPU::Execute0xFX55(int reg_number1) {
+    for (int i = 0 ; i <= reg_number1; i++) {
+		this->m_GameMemory[this->m_AddressI + i] = this->m_Registers[i];
+	}
+	this->m_AddressI += (reg_number1 + 1);
+}
+
+void CPU::Execute0xFX65(int reg_number1) {
+    for (int i = 0 ; i <= reg_number1; i++) {
+		this->m_Registers[i] = this->m_GameMemory[this->m_AddressI + i];
+	}
+	this->m_AddressI += (reg_number1 + 1);
+}
