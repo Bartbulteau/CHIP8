@@ -45,6 +45,59 @@ void UI::pollEvents() {
             case sf::Event::Closed:
                 this->window->close();
                 break;
+            
+            // Keyboard handling
+            case sf::Event::KeyPressed: {
+                switch(this->ev.key.code) {
+                    case sf::Keyboard::Key::Num1: this->cpu.setKeyState(0x1, true); break;
+                    case sf::Keyboard::Key::Num2: this->cpu.setKeyState(0x2, true); break;
+                    case sf::Keyboard::Key::Num3: this->cpu.setKeyState(0x3, true); break;
+                    case sf::Keyboard::Key::Num4: this->cpu.setKeyState(0xC, true); break;
+ 
+                    case sf::Keyboard::Key::A: this->cpu.setKeyState(0x4, true); std::cout << "4" << std::endl; break;
+                    case sf::Keyboard::Key::Z: this->cpu.setKeyState(0x5, true); break;
+                    case sf::Keyboard::Key::E: this->cpu.setKeyState(0x6, true); break;
+                    case sf::Keyboard::Key::R: this->cpu.setKeyState(0xD, true); break;
+
+                    case sf::Keyboard::Key::Q: this->cpu.setKeyState(0x7, true); break;
+                    case sf::Keyboard::Key::S: this->cpu.setKeyState(0x8, true); break;
+                    case sf::Keyboard::Key::D: this->cpu.setKeyState(0x9, true); break;
+                    case sf::Keyboard::Key::F: this->cpu.setKeyState(0xE, true); break;
+
+                    case sf::Keyboard::Key::W: this->cpu.setKeyState(0xA, true); break;
+                    case sf::Keyboard::Key::X: this->cpu.setKeyState(0x0, true); break;
+                    case sf::Keyboard::Key::C: this->cpu.setKeyState(0xB, true); break;
+                    case sf::Keyboard::Key::V: this->cpu.setKeyState(0xF, true); break;
+                    default: break;
+                }
+                break;
+            }
+
+            case sf::Event::KeyReleased: {
+                switch(this->ev.key.code) {
+                    case sf::Keyboard::Key::Num1: this->cpu.setKeyState(0x1, false); break;
+                    case sf::Keyboard::Key::Num2: this->cpu.setKeyState(0x2, false); break;
+                    case sf::Keyboard::Key::Num3: this->cpu.setKeyState(0x3, false); break;
+                    case sf::Keyboard::Key::Num4: this->cpu.setKeyState(0xC, false); break;
+ 
+                    case sf::Keyboard::Key::A: this->cpu.setKeyState(0x4, false); break;
+                    case sf::Keyboard::Key::Z: this->cpu.setKeyState(0x5, false); break;
+                    case sf::Keyboard::Key::E: this->cpu.setKeyState(0x6, false); break;
+                    case sf::Keyboard::Key::R: this->cpu.setKeyState(0xD, false); break;
+
+                    case sf::Keyboard::Key::Q: this->cpu.setKeyState(0x7, false); break;
+                    case sf::Keyboard::Key::S: this->cpu.setKeyState(0x8, false); break;
+                    case sf::Keyboard::Key::D: this->cpu.setKeyState(0x9, false); break;
+                    case sf::Keyboard::Key::F: this->cpu.setKeyState(0xE, false); break;
+
+                    case sf::Keyboard::Key::W: this->cpu.setKeyState(0xA, false); break;
+                    case sf::Keyboard::Key::X: this->cpu.setKeyState(0x0, false); break;
+                    case sf::Keyboard::Key::C: this->cpu.setKeyState(0xB, false); break;
+                    case sf::Keyboard::Key::V: this->cpu.setKeyState(0xF, false); break;
+                    default: break;
+                }
+                break;
+            }
             default:
                 break;
         }

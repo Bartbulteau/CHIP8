@@ -72,7 +72,7 @@ int CPU::keyPressedValue() {
 } 
 
 void CPU::beep() {
-    std::cout << "beep" << std::endl;
+    //std::cout << "beep" << std::endl;
 }
 
 // Opcode related
@@ -358,21 +358,21 @@ void CPU::DecodeOpcodeD(WORD opcode) {
 }
 
 void CPU::Execute0xDXYN(int reg_number1, int reg_number2, int n) {
-    int coordx = this->m_Registers[reg_number1];
-    int coordy = this->m_Registers[reg_number2];
+    int coordx = (this->m_Registers[reg_number1])%SCREEN_WIDTH;
+    int coordy = (this->m_Registers[reg_number2])%SCREEN_HIGHT;
     this->m_Registers[0xF] = 0;
+
+    int x, y;
 
     for (int j = 0; j < n; j++) {
 
-        int x, y;
         y = coordy+j;
-        if(y >= SCREEN_HIGHT) break;
 
         BYTE line = this->m_GameMemory[this->m_AddressI+j]; // get line to draw from memory
 
         bool line_pixels[8];                                // convert to an array bool depending on each expected pixel state
         for(int k = 0; k < 8; k++) {
-            line_pixels[k] = bool((line >> k*8)&255);
+            line_pixels[k] = bool(line & (0x80 >> k));
         }
 
         for(int i = 0; i < 8; i++) {                        // apply following the rule
@@ -465,12 +465,12 @@ void CPU::Execute0xFX55(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_GameMemory[this->m_AddressI + i] = this->m_Registers[i];
 	}
-	//this->m_AddressI += (reg_number1 + 1);
+	this->m_AddressI += (reg_number1 + 1);
 }
 
 void CPU::Execute0xFX65(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_Registers[i] = this->m_GameMemory[this->m_AddressI + i];
 	}
-	//this->m_AddressI += (reg_number1 + 1);
+	this->m_AddressI += (reg_number1 + 1);
 }
