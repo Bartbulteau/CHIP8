@@ -364,6 +364,10 @@ void CPU::Execute0xDXYN(int reg_number1, int reg_number2, int n) {
 
     for (int j = 0; j < n; j++) {
 
+        int x, y;
+        y = coordy+j;
+        if(y >= SCREEN_HIGHT) break;
+
         BYTE line = this->m_GameMemory[this->m_AddressI+j]; // get line to draw from memory
 
         bool line_pixels[8];                                // convert to an array bool depending on each expected pixel state
@@ -372,13 +376,11 @@ void CPU::Execute0xDXYN(int reg_number1, int reg_number2, int n) {
         }
 
         for(int i = 0; i < 8; i++) {                        // apply following the rule
-
-            if(coordx+i > SCREEN_WIDTH-1) coordx = -i;
-            if(coordy+j > SCREEN_HIGHT-1) coordy = -j;
-
-            bool tmp = this->ScreenData[coordx+i][coordy+j];
-            this->ScreenData[coordx+i][coordy+j] = (line_pixels[i] != this->ScreenData[coordx+i][coordy+j]);
-            if(this->ScreenData[coordx+i][coordy+j] != tmp) this->m_Registers[0xF] = 1;
+            x = coordx+i;
+            if(x >= SCREEN_WIDTH) break;
+            bool tmp = this->ScreenData[x][y];
+            this->ScreenData[x][y] = (line_pixels[i] != this->ScreenData[x][y]);
+            if(this->ScreenData[x][y] != tmp) this->m_Registers[0xF] = 1;
         }
 
     }
@@ -463,12 +465,12 @@ void CPU::Execute0xFX55(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_GameMemory[this->m_AddressI + i] = this->m_Registers[i];
 	}
-	this->m_AddressI += (reg_number1 + 1);
+	//this->m_AddressI += (reg_number1 + 1);
 }
 
 void CPU::Execute0xFX65(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_Registers[i] = this->m_GameMemory[this->m_AddressI + i];
 	}
-	this->m_AddressI += (reg_number1 + 1);
+	//this->m_AddressI += (reg_number1 + 1);
 }

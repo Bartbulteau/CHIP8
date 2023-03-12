@@ -34,4 +34,4 @@ total:
 	make clean
 	make
 	clear
-	./$(BIN)
+	./$(BIN) roms/IBM_Logo.ch8
