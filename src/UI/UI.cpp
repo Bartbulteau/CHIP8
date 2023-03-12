@@ -54,7 +54,7 @@ void UI::pollEvents() {
                     case sf::Keyboard::Key::Num3: this->cpu.setKeyState(0x3, true); break;
                     case sf::Keyboard::Key::Num4: this->cpu.setKeyState(0xC, true); break;
  
-                    case sf::Keyboard::Key::A: this->cpu.setKeyState(0x4, true); std::cout << "4" << std::endl; break;
+                    case sf::Keyboard::Key::A: this->cpu.setKeyState(0x4, true); break;
                     case sf::Keyboard::Key::Z: this->cpu.setKeyState(0x5, true); break;
                     case sf::Keyboard::Key::E: this->cpu.setKeyState(0x6, true); break;
                     case sf::Keyboard::Key::R: this->cpu.setKeyState(0xD, true); break;

@@ -61,6 +61,14 @@ void CPU::reset() {
 
     m_DelayTimer = 0;
     m_SoundTimer = 0;
+
+    loadFonts();
+}
+
+void CPU::loadFonts() {
+    for (BYTE addr = 0; addr < 80; addr++){
+        this->m_GameMemory[addr] = fonts[addr];
+    }
 }
 
 // Peripheric related functions
@@ -190,7 +198,7 @@ void CPU::DecodeOpcode5(WORD opcode) {
         int regx = opcode & 0x0F00;
         regx >>= 8;
         int regy = opcode & 0x00F0;
-        regy >>= 8;
+        regy >>= 4;
         this->Execute0x5XY0(regx, regy);
     } else {
         this->unknownOpcode(opcode);
@@ -224,7 +232,7 @@ void CPU::DecodeOpcode7(WORD opcode) {
 }
 
 void CPU::Execute0x7XNN(int reg_number, int nn) {
-    this->m_Registers[reg_number] = this->m_Registers[reg_number] + nn;
+    this->m_Registers[reg_number] += nn;
 }
 
 // 0x8000 opcodes
@@ -241,9 +249,9 @@ void CPU::DecodeOpcode8(WORD opcode) {
         case 0x0003: this->Execute0x8XY3(regx, regy); break;
         case 0x0004: this->Execute0x8XY4(regx, regy); break;
         case 0x0005: this->Execute0x8XY5(regx, regy); break;
-        case 0x0006: this->Execute0x8XY6(regx); break;
+        case 0x0006: this->Execute0x8XY6(regx, regy); break;
         case 0x0007: this->Execute0x8XY7(regx, regy); break;
-        case 0x000E: this->Execute0x8XYE(regx); break;
+        case 0x000E: this->Execute0x8XYE(regx, regy); break;
         default: this->unknownOpcode(opcode); break;
     }
 }
@@ -267,18 +275,17 @@ void CPU::Execute0x8XY3(int reg_number1, int reg_number2) {
 void CPU::Execute0x8XY4(int reg_number1, int reg_number2) {
     int value = this->m_Registers[reg_number1] + this->m_Registers[reg_number2];
     if(value > 255) this->m_Registers[0xF] = 1;
-
     this->m_Registers[reg_number1] = this->m_Registers[reg_number1] + this->m_Registers[reg_number2];
 }
 
 void CPU::Execute0x8XY5(int reg_number1, int reg_number2) {
     if(this->m_Registers[reg_number1] > this->m_Registers[reg_number2]) this->m_Registers[0xF] = 1;
     else this->m_Registers[0xF] = 0;
-
     this->m_Registers[reg_number1] = this->m_Registers[reg_number1] - this->m_Registers[reg_number2];
 }
 
-void CPU::Execute0x8XY6(int reg_number1) {
+void CPU::Execute0x8XY6(int reg_number1, int reg_number2) {
+    this->m_Registers[reg_number1] = this->m_Registers[reg_number2];
 	this->m_Registers[0xF] = this->m_Registers[reg_number1] & 0x1 ;
 	this->m_Registers[reg_number1] >>= 1 ;
 }
@@ -289,7 +296,8 @@ void CPU::Execute0x8XY7(int reg_number1, int reg_number2) {
 	this->m_Registers[reg_number1] = this->m_Registers[reg_number2] - this->m_Registers[reg_number1] ;
 }
 
-void CPU::Execute0x8XYE(int reg_number1) {
+void CPU::Execute0x8XYE(int reg_number1, int reg_number2) {
+    this->m_Registers[reg_number1] = this->m_Registers[reg_number2];
     this->m_Registers[0xF] = this->m_Registers[reg_number1] >> 7 ;
 	this->m_Registers[reg_number1] <<= 1 ;
 }
@@ -380,7 +388,7 @@ void CPU::Execute0xDXYN(int reg_number1, int reg_number2, int n) {
             if(x >= SCREEN_WIDTH) break;
             bool tmp = this->ScreenData[x][y];
             this->ScreenData[x][y] = (line_pixels[i] != this->ScreenData[x][y]);
-            if(this->ScreenData[x][y] != tmp) this->m_Registers[0xF] = 1;
+            if(this->ScreenData[x][y] != tmp and this->ScreenData[x][y] == false) this->m_Registers[0xF] = 1;
         }
 
     }
@@ -398,11 +406,11 @@ void CPU::DecodeOpcodeE(WORD opcode) {
 }
 
 void CPU::Execute0xEX9E(int reg_number1) {
-    if(this->Keys[reg_number1]) this->m_ProgramCounter += 2;
+    if(this->Keys[this->m_Registers[reg_number1]]) this->m_ProgramCounter += 2;
 }
 
 void CPU::Execute0xEXA1(int reg_number1) {
-    if(!this->Keys[reg_number1]) this->m_ProgramCounter += 2;
+    if(!this->Keys[this->m_Registers[reg_number1]]) this->m_ProgramCounter += 2;
 }
 
 // 0xF000 opcodes
@@ -465,12 +473,12 @@ void CPU::Execute0xFX55(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_GameMemory[this->m_AddressI + i] = this->m_Registers[i];
 	}
-	this->m_AddressI += (reg_number1 + 1);
+	//this->m_AddressI += (reg_number1 + 1);
 }
 
 void CPU::Execute0xFX65(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_Registers[i] = this->m_GameMemory[this->m_AddressI + i];
 	}
-	this->m_AddressI += (reg_number1 + 1);
+	//this->m_AddressI += (reg_number1 + 1);
 }
