@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <SFML/Audio.hpp>
 #include "Params.hpp"
 
 typedef unsigned char BYTE;
@@ -58,6 +59,8 @@ private:
     // Peripheric components
     bool ScreenData[SCREEN_WIDTH][SCREEN_HIGHT];
     bool Keys[KEYS_NUMBER];
+    sf::SoundBuffer sb;
+    sf::Sound sound;
 
     // Memory related functions
     void reset();

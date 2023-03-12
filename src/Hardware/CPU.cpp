@@ -1,11 +1,15 @@
 #include <iostream>
 #include <vector>
+#include <SFML/Audio.hpp>
 #include "Params.hpp"
 
 #include "CPU.hpp"
 
 CPU::CPU() {
     this->reset();
+
+    this->sb.loadFromFile("audio/beep.wav");
+    this->sound.setBuffer(sb);
 }
 
 CPU::~CPU() {
@@ -80,7 +84,7 @@ int CPU::keyPressedValue() {
 } 
 
 void CPU::beep() {
-    //std::cout << "beep" << std::endl;
+    this->sound.play();
 }
 
 // Opcode related

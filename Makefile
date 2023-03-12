@@ -2,7 +2,7 @@ CXX := g++
 CXXFLAGS := -Wall -Werror -std=c++11
 
 #LIBS INSTALLED IN A STANDARD WAY
-LIBS := -L/usr/local/Cellar/sfml/2.5.1_2/lib -lsfml-graphics -lsfml-window -lsfml-system
+LIBS := -L/usr/local/Cellar/sfml/2.5.1_2/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 INCLUDES := -I/usr/local/Cellar/sfml/2.5.1_2/include
 
 SOURCEDIR := src
