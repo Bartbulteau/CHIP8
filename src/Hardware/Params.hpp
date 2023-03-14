@@ -2,7 +2,7 @@
 #define PARAMS_HPP
 
 // CPU parameters
-#define CYCLES_PER_FRAME 10
+#define CYCLES_PER_FRAME 8
 
 // screen parameters
 #define SCREEN_WIDTH 64

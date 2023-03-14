@@ -478,12 +478,12 @@ void CPU::Execute0xFX55(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_GameMemory[this->m_AddressI + i] = this->m_Registers[i];
 	}
-	//this->m_AddressI += (reg_number1 + 1);
+	this->m_AddressI += (reg_number1 + 1);
 }
 
 void CPU::Execute0xFX65(int reg_number1) {
     for (int i = 0 ; i <= reg_number1; i++) {
 		this->m_Registers[i] = this->m_GameMemory[this->m_AddressI + i];
 	}
-	//this->m_AddressI += (reg_number1 + 1);
+	this->m_AddressI += (reg_number1 + 1);
 }
